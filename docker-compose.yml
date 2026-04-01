@@ -28,22 +28,23 @@ services:
     container_name: sonarqube
     ports:
       - "9000:9000"
+  prometheus:
+    build: ./prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+
+  grafana:
+    build: ./grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
 
 volumes:
   mysql_volumne:
 
 
-#   prometheus:
-#     build: ./prometheus
-#     container_name: prometheus
-#     ports:
-#       - "9090:9090"
 
-#   grafana:
-#     build: ./grafana
-#     container_name: grafana
-#     ports:
-#       - "3000:3000"
 
 #   burpsuite:
 #     build: ./burpsuite
