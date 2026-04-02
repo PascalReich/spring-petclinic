@@ -51,6 +51,12 @@ services:
       - "8085:8080"
     volumes:
       - jenkins_volume:/var/jenkins_home
+  production:
+    build: ./prod
+    container_name: production
+    ports:
+      - "8081:8080"
+      - "2222:22"
   
 volumes:
   mysql_volume:
