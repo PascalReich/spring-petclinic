@@ -11,6 +11,12 @@ credentials:
     domainCredentials:
     - domain: {
         }
+      credentials:
+      - string:
+          scope: GLOBAL
+          id: "sonar-token"
+          secret: "${SONAR_TOKEN}"
+          description: "SonarQube token"
   user: {
     }
 jenkins:
@@ -243,6 +249,13 @@ unclassified:
     }
   shell: {
     }
+  sonarGlobalConfiguration:
+    buildWrapperEnabled: false
+    installations:
+    - name: "sonarqube"
+      serverUrl: "${SONAR_HOST_URL}"
+      serverAuthenticationToken: "sonar-token"
+      webhookSecretId: ""
   timestamper:
     allPipelines: false
     elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '"
