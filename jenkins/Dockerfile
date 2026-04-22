@@ -13,6 +13,6 @@ RUN apt-get update && apt-get install -y lsb-release ca-certificates curl && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # install java and maven
-RUN apt-get update && apt-get install -y maven default-jdk
+RUN apt-get update && apt-get install -y maven default-jdk git
 USER jenkins
-RUN jenkins-plugin-cli --plugins "blueocean docker-workflow json-path-api configuration-as-code"
+RUN jenkins-plugin-cli --plugins "blueocean docker-workflow json-path-api configuration-as-code sonar git"
