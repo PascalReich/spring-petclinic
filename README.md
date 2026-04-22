@@ -8,6 +8,36 @@ docker compose up mysql -d
 docker compose up petclinic
 ```
 
+## Monitoring stack
+
+The monitoring services use the custom Docker bridge network `devsecops-net`, which is
+declared in [docker-compose.yml].
+
+Start Prometheus and Grafana:
+
+```bash
+docker compose up -d prometheus grafana
+```
+
+Verify both containers joined the custom network:
+
+```bash
+docker network inspect devsecops-net
+```
+
+Open the UIs:
+
+- Prometheus: <http://localhost:9090>
+- Grafana: <http://localhost:3000>
+
+Grafana credentials:
+
+- Username: `admin`
+- Password: `admin`
+
+Grafana is pre-provisioned with Prometheus as the default data source using
+[grafana/provisioning/datasources/prometheus.yml].
+
 # Spring PetClinic Sample Application [![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml)[![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/gradle-build.yml)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/spring-projects/spring-petclinic) [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=7517918)
