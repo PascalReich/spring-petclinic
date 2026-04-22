@@ -275,7 +275,7 @@ tool:
       name: "java21"
   maven:
     installations:
-    - name: "maven"
+    - name: "M3"
       properties:
       - installSource:
           installers:
