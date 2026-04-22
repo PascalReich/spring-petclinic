@@ -11,7 +11,7 @@ docker compose up petclinic
 ## Monitoring stack
 
 The monitoring services use the custom Docker bridge network `devsecops-net`, which is
-declared in [docker-compose.yml](/home/dvijr/devops/spring-petclinic/docker-compose.yml).
+declared in [docker-compose.yml].
 
 Start Prometheus and Grafana:
 
@@ -36,7 +36,7 @@ Grafana credentials:
 - Password: `admin`
 
 Grafana is pre-provisioned with Prometheus as the default data source using
-[grafana/provisioning/datasources/prometheus.yml](/home/dvijr/devops/spring-petclinic/grafana/provisioning/datasources/prometheus.yml).
+[grafana/provisioning/datasources/prometheus.yml].
 
 # Spring PetClinic Sample Application [![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml)[![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/gradle-build.yml)
 
