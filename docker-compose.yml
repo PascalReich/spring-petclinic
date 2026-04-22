@@ -63,6 +63,8 @@ services:
     container_name: owasp-zap
     ports:
       - "8082:8080"
+    networks:
+      - devsecops-net
   jenkins:
     build: ./jenkins
     container_name: jenkins
