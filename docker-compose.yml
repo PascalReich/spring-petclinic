@@ -10,6 +10,8 @@ services:
       - SPRING_DATASOURCE_PASSWORD=petclinic
     depends_on:
       - mysql
+    networks:
+      - devsecops-net
   mysql:
     image: mysql:9.6
     ports:
@@ -23,22 +25,39 @@ services:
     volumes:
       - "./conf.d:/etc/mysql/conf.d:ro"
       - mysql_volume:/var/lib/mysql
+    networks:
+      - devsecops-net
   sonarqube:
     build: ./sonarqube
     container_name: sonarqube
     ports:
       - "9000:9000"
+    networks:
+      - devsecops-net
   prometheus:
     build: ./prometheus
     container_name: prometheus
     ports:
       - "9090:9090"
+    volumes:
+      - prometheus_data:/prometheus
+    networks:
+      - devsecops-net
 
   grafana:
     build: ./grafana
     container_name: grafana
     ports:
       - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - devsecops-net
   # burpsuite:
   #   build: ./burpsuite
   #   container_name: burpsuite
@@ -51,13 +70,24 @@ services:
       - "8085:8080"
     volumes:
       - jenkins_volume:/var/jenkins_home
+    networks:
+      - devsecops-net
   production:
     build: ./prod
     container_name: production
     ports:
       - "8081:8080"
       - "2222:22"
+    networks:
+      - devsecops-net
   
 volumes:
   mysql_volume:
-  jenkins_volume:  
+  jenkins_volume:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  devsecops-net:
+    name: devsecops-net
+    driver: bridge
