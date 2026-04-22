@@ -37,11 +37,16 @@ if [ -z "${SONAR_TOKEN}" ]; then
   exit 1
 fi
 
-if [ -f "${ENV_FILE}" ] && grep -q '^SONAR_TOKEN=' "${ENV_FILE}"; then
-  sed -i "s/^SONAR_TOKEN=.*/SONAR_TOKEN=${SONAR_TOKEN}/" "${ENV_FILE}"
+tmp_file="${ENV_FILE}.tmp"
+
+if [ -f "${ENV_FILE}" ]; then
+  grep -v '^SONAR_TOKEN=' "${ENV_FILE}" > "${tmp_file}"
 else
-  printf '\nSONAR_TOKEN=%s\n' "${SONAR_TOKEN}" >> "${ENV_FILE}"
+  : > "${tmp_file}"
 fi
+
+printf 'SONAR_TOKEN=%s\n' "${SONAR_TOKEN}" >> "${tmp_file}"
+mv "${tmp_file}" "${ENV_FILE}"
 
 echo "Project '${SONAR_PROJECT_KEY}' is ready."
 echo "SONAR_TOKEN saved to ${ENV_FILE}."
