@@ -1,4 +1,4 @@
-Build sonarqube project and generate token (saves locally for now)
+Build sonarqube project and generate token
 bash sonarqube/create-project.sh
 
 Steps:
@@ -15,7 +15,13 @@ Projects -> create local -> name it and its key
 
 Create a user token and name it, save this token in a .env file in root
 
-Build Jenkins after making the token file
+OR
+
+Can also skip these steps using script:
+bash sonarqube/create-project.sh
+
+
+Build/rebuild Jenkins after making the token file
 docker compose up -d jenkins
 
 Find it in: http://localhost:8085
@@ -23,6 +29,3 @@ Find it in: http://localhost:8085
 You should see the SQ server linked automatically due to the code setup
 
 Can now run jenkins and see the SQ stuff on the SQ side
-
-With the script: bash sonarqube/create-project.sh
-can skip the SonarQube steps and go straight to rebuilding jenkins after the token was made
