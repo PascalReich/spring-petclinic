@@ -20,12 +20,5 @@ OR
 Can also skip these steps using script:
 bash sonarqube/create-project.sh
 
-
-Build/rebuild Jenkins after making the token file
-docker compose up -d jenkins
-
-Find it in: http://localhost:8085
-
-You should see the SQ server linked automatically due to the code setup
-
-Can now run jenkins and see the SQ stuff on the SQ side
+Jenkins setup is in the main Readme file,
+may need to restart Jenkins after generating a token
