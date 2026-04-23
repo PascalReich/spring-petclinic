@@ -37,5 +37,43 @@ pipeline {
                 }
             }
         }
+        stage('OWASP ZAP Scan') {
+            steps {
+                script {
+                    // Jenkins calls the ZAP container internally at http://owasp-zap:8080
+                    sh '''
+                        echo "Starting OWASP ZAP..."
+                        for i in {1..30}; do
+                            if curl -s http://owasp-zap:8080/ > /dev/null; then
+                                echo "OWASP ZAP is up!"
+                                break
+                            else
+                                sleep 5
+                            fi
+                        done
+                    '''
+                    
+                    // Trigger the spider scan. ZAP scans the petclinic container over the shared network
+                    sh '''
+                        echo "Performing spider scan..."
+                        curl -s 'http://owasp-zap:8080/JSON/spider/action/scan/?url=http://petclinic:8080'
+                    '''
+                    
+                    // Wait for the scan to complete to ensure the pipeline doesn't exit prematurely
+                    sh '''
+                        echo "Waiting for scan to complete..."
+                        while true; do
+                            status=$(curl -s 'http://owasp-zap:8080/JSON/spider/view/status/')
+                            if [[ "$status" == *'"status":"100"'* ]]; then
+                                echo "Scan completed!"
+                                break
+                            fi
+                            echo "Scan in progress: $status"
+                            sleep 5
+                        done
+                    '''
+                }
+            }
+        }
     }
 }

@@ -62,11 +62,13 @@ services:
       - prometheus
     networks:
       - devsecops-net
-  # burpsuite:
-  #   build: ./burpsuite
-  #   container_name: burpsuite
-  #   ports:
-  #     - "8081:8080"
+  owasp-zap:
+    build: ./owasp-zap
+    container_name: owasp-zap
+    ports:
+      - "8082:8080"
+    networks:
+      - devsecops-net
   jenkins:
     build: ./jenkins
     container_name: jenkins
