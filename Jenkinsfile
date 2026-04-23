@@ -64,7 +64,7 @@ pipeline {
                         echo "Waiting for scan to complete..."
                         while true; do
                             status=$(curl -s 'http://owasp-zap:8080/JSON/spider/view/status/')
-                            if [[ "$status" == *'"status":"100"'* ]]; then
+                            if echo "$status" | grep -q '"status":"100"'; then
                                 echo "Scan completed!"
                                 break
                             fi
@@ -72,6 +72,17 @@ pipeline {
                             sleep 5
                         done
                     '''
+                    
+                    // NEW: Generate and save the HTML report
+                    sh '''
+                        echo "Generating ZAP Security Report..."
+                        curl -s http://owasp-zap:8080/OTHER/core/other/htmlreport/ > zap-security-report.html
+                    '''
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'zap-security-report.html', allowEmptyArchive: true
                 }
             }
         }
