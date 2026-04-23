@@ -8,6 +8,18 @@ docker compose up mysql -d
 docker compose up petclinic
 ```
 
+
+ the create project script makes keys that need to be distributed to jenkins
+```shell
+bash sonarqube/create-project.sh
+docker compose up -d sonarqube
+docker compose up jenkins
+```
+
+if jenkins doesnt work, you need to do the initial setup before adding the jenkins.yaml.
+
+remove it from the docker compose, go thru the set up, and then add it back.
+
 ## Monitoring stack
 
 The monitoring services use the custom Docker bridge network `devsecops-net`, which is

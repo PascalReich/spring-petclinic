@@ -32,6 +32,10 @@ services:
     container_name: sonarqube
     ports:
       - "9000:9000"
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
     networks:
       - devsecops-net
   prometheus:
@@ -70,8 +74,13 @@ services:
     container_name: jenkins
     ports:
       - "8085:8080"
+    environment:
+      CASC_JENKINS_CONFIG: /var/jenkins_home/casc_configs/jenkins.yaml
+      SONAR_HOST_URL: http://sonarqube:9000
+      SONAR_TOKEN: ${SONAR_TOKEN:-change-me}
     volumes:
       - jenkins_volume:/var/jenkins_home
+      - ./jenkins/jenkins.yaml:/var/jenkins_home/casc_configs/jenkins.yaml:ro
     networks:
       - devsecops-net
   production:
@@ -86,6 +95,9 @@ services:
 volumes:
   mysql_volume:
   jenkins_volume:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
   prometheus_data:
   grafana_data:
 
