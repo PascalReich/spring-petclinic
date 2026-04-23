@@ -13,6 +13,7 @@ docker compose up petclinic
 ```shell
 bash sonarqube/create-project.sh
 docker compose up -d sonarqube
+docker compose up -d owasp-zap
 docker compose up jenkins
 ```
 
