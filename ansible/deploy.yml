@@ -1,0 +1,19 @@
+- hosts: production
+  tasks:
+    - name: Stop existing petclinic process
+      shell: pkill -f '[s]pring-petclinic' || true
+
+    - name: Copy JAR to production
+      copy:
+        src: "{{ jar_path }}"
+        dest: /home/server/spring-petclinic.jar
+        mode: '0755'
+
+    - name: Start petclinic
+      shell: >
+        nohup /usr/local/openjdk-27/bin/java -jar /home/server/spring-petclinic.jar
+        --spring.profiles.active=mysql
+        --spring.datasource.url=jdbc:mysql://mysql:3306/petclinic
+        --spring.datasource.username=petclinic
+        --spring.datasource.password=petclinic
+        > /home/server/app.log 2>&1 &

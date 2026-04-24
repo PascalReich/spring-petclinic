@@ -1,5 +1,3 @@
-
-
 FROM openjdk:27-ea-slim-bookworm
 
 RUN apt-get update && apt-get install -y openssh-server python3
@@ -9,20 +7,15 @@ RUN useradd -m -s /bin/bash server
 
 WORKDIR /home/server
 
-RUN mkdir -p .ssh
+RUN mkdir -p .ssh && chown server:server .ssh && chmod 700 .ssh
 
-COPY access.pub ssh_key.pub
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-RUN cat /home/server/ssh_key.pub >> /home/server/.ssh/authorized_keys
+RUN mkdir -p /run/sshd
 
-RUN chown -R server:server /home/server/.ssh
-
-RUN chmod 600 /home/server/.ssh/authorized_keys
-    
 USER root
-
-RUN service ssh start
 
 EXPOSE 22
 
-CMD ["/usr/sbin/sshd", "-D"]
+ENTRYPOINT ["/entrypoint.sh"]
