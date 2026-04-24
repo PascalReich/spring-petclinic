@@ -23,6 +23,15 @@ The SonarQube token used by Jenkins is generated automatically by an init contai
 
 **In production**, all of the above credentials and the SonarQube token would be stored in a secrets manager (e.g., HashiCorp Vault or AWS Secrets Manager) and injected at runtime — never hardcoded or committed to source control.
 
+## Updating the Jenkinsfile
+
+The local `Jenkinsfile` is mounted directly into the Jenkins container. To test changes without pushing to GitHub:
+
+1. Edit `Jenkinsfile` locally
+2. Go to `http://localhost:8085/configuration-as-code/`
+3. Click **Apply new configuration**
+4. Run the build
+
 ## Monitoring stack
 
 The monitoring services use the custom Docker bridge network `devsecops-net`, which is

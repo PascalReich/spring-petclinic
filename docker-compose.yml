@@ -128,6 +128,7 @@ services:
     volumes:
       - jenkins_volume:/var/jenkins_home
       - ./jenkins/jenkins.yaml:/var/jenkins_home/casc_configs/jenkins.yaml:ro
+      - ./Jenkinsfile:/var/jenkins_home/Jenkinsfile:ro
       - sonar_token:/run/secrets:ro
     networks:
       - devsecops-net

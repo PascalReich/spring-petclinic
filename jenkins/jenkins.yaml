@@ -61,19 +61,9 @@ jobs:
   - script: >
       pipelineJob('spring-petclinic') {
         definition {
-          cpsScm {
-            scm {
-              git {
-                remote {
-                  url('https://github.com/PascalReich/spring-petclinic.git')
-                }
-                branch('*/main')
-              }
-            }
-            scriptPath('Jenkinsfile')
+          cps {
+            script(readFileFromWorkspace('/var/jenkins_home/Jenkinsfile'))
+            sandbox(true)
           }
-        }
-        triggers {
-          scm('H/1 * * * *')
         }
       }
