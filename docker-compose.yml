@@ -125,19 +125,46 @@ services:
     depends_on:
       sonarqube-init:
         condition: service_completed_successfully
+      prod-keygen:
+        condition: service_completed_successfully
     volumes:
       - jenkins_volume:/var/jenkins_home
       - ./jenkins/jenkins.yaml:/var/jenkins_home/casc_configs/jenkins.yaml:ro
       - ./Jenkinsfile:/var/jenkins_home/Jenkinsfile:ro
+      - ./ansible:/var/jenkins_home/ansible:ro
       - sonar_token:/run/secrets:ro
+      - prod_ssh:/var/jenkins_home/prod_ssh:ro
     networks:
       - devsecops-net
+  prod-keygen:
+    image: alpine
+    user: root
+    command: >
+      sh -c "
+      if [ -f /run/secrets/prod_ssh/id_ed25519 ]; then
+        echo 'SSH key already exists, skipping generation';
+        exit 0;
+      fi;
+      apk add --no-cache openssh-client &&
+      mkdir -p /run/secrets/prod_ssh &&
+      ssh-keygen -t ed25519 -f /run/secrets/prod_ssh/id_ed25519 -N '' &&
+      chown 1000:1000 /run/secrets/prod_ssh/id_ed25519 /run/secrets/prod_ssh/id_ed25519.pub &&
+      echo 'SSH key pair generated successfully'
+      "
+    volumes:
+      - prod_ssh:/run/secrets/prod_ssh
+
   production:
     build: ./prod
     container_name: production
     ports:
       - "8081:8080"
       - "2222:22"
+    depends_on:
+      prod-keygen:
+        condition: service_completed_successfully
+    volumes:
+      - prod_ssh:/run/secrets/prod_ssh:ro
     networks:
       - devsecops-net
   
@@ -150,6 +177,7 @@ volumes:
   prometheus_data:
   grafana_data:
   sonar_token:
+  prod_ssh:
 
 networks:
   devsecops-net:

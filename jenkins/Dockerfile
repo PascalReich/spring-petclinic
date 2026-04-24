@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -y lsb-release ca-certificates curl && \
     apt-get update && apt-get install -y docker-ce-cli && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# install java and maven
-RUN apt-get update && apt-get install -y maven default-jdk git
+# install java, maven, and ansible
+RUN apt-get update && apt-get install -y maven default-jdk git python3 python3-pip && \
+    pip3 install --break-system-packages ansible
 USER jenkins
 RUN jenkins-plugin-cli --plugins "blueocean docker-workflow json-path-api configuration-as-code sonar git prometheus job-dsl"

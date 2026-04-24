@@ -86,5 +86,14 @@ pipeline {
                 }
             }
         }
+        stage('Deploy') {
+            steps {
+                sh '''
+                    ansible-playbook -i /var/jenkins_home/ansible/inventory.ini \
+                      /var/jenkins_home/ansible/deploy.yml \
+                      -e "jar_path=$(find $WORKSPACE/target -name '*.jar' ! -name '*.original' | head -1)"
+                '''
+            }
+        }
     }
 }
