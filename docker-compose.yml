@@ -9,7 +9,14 @@ services:
       - SPRING_DATASOURCE_USERNAME=petclinic
       - SPRING_DATASOURCE_PASSWORD=petclinic
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
     networks:
       - devsecops-net
   mysql:
@@ -25,6 +32,11 @@ services:
     volumes:
       - "./conf.d:/etc/mysql/conf.d:ro"
       - mysql_volume:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
     networks:
       - devsecops-net
   sonarqube:
@@ -36,6 +48,12 @@ services:
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_extensions:/opt/sonarqube/extensions
       - sonarqube_logs:/opt/sonarqube/logs
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/api/system/status | grep -q UP"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
     networks:
       - devsecops-net
   prometheus:
@@ -69,6 +87,33 @@ services:
       - "8082:8080"
     networks:
       - devsecops-net
+  sonarqube-init:
+    image: curlimages/curl:latest
+    user: root
+    depends_on:
+      sonarqube:
+        condition: service_healthy
+    command: >
+      sh -c "
+      if [ -f /run/secrets/sonar-token ]; then
+        echo 'Token already exists, skipping generation';
+        exit 0;
+      fi;
+      token=$$(curl -s -u admin:admin -X POST
+      'http://sonarqube:9000/api/user_tokens/generate?name=jenkins-token'
+      | grep -o '\"token\":\"[^\"]*\"' | cut -d'\"' -f4);
+      if [ -z \"$$token\" ]; then
+        echo 'Failed to generate token';
+        exit 1;
+      fi;
+      echo -n \"$$token\" > /run/secrets/sonar-token;
+      echo 'Token written successfully'
+      "
+    volumes:
+      - sonar_token:/run/secrets
+    networks:
+      - devsecops-net
+
   jenkins:
     build: ./jenkins
     container_name: jenkins
@@ -77,10 +122,13 @@ services:
     environment:
       CASC_JENKINS_CONFIG: /var/jenkins_home/casc_configs/jenkins.yaml
       SONAR_HOST_URL: http://sonarqube:9000
-      SONAR_TOKEN: ${SONAR_TOKEN:-change-me}
+    depends_on:
+      sonarqube-init:
+        condition: service_completed_successfully
     volumes:
       - jenkins_volume:/var/jenkins_home
       - ./jenkins/jenkins.yaml:/var/jenkins_home/casc_configs/jenkins.yaml:ro
+      - sonar_token:/run/secrets:ro
     networks:
       - devsecops-net
   production:
@@ -100,6 +148,7 @@ volumes:
   sonarqube_logs:
   prometheus_data:
   grafana_data:
+  sonar_token:
 
 networks:
   devsecops-net:

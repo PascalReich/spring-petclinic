@@ -3,23 +3,25 @@
 ## How to launch
 
 ```shell
-docker compose up mysql -d 
-[wait a bit]
-docker compose up petclinic
+docker compose up
 ```
 
+All services start automatically in the correct order via Docker healthchecks and dependency conditions. No manual setup required.
 
- the create project script makes keys that need to be distributed to jenkins
-```shell
-bash sonarqube/create-project.sh
-docker compose up -d sonarqube
-docker compose up -d owasp-zap
-docker compose up jenkins
-```
+## Credentials note
 
-if jenkins doesnt work, you need to do the initial setup before adding the jenkins.yaml.
+The following credentials are hardcoded for local development convenience:
 
-remove it from the docker compose, go thru the set up, and then add it back.
+| Service    | Username  | Password  |
+|------------|-----------|-----------|
+| Jenkins    | `admin`   | `admin`   |
+| Grafana    | `admin`   | `admin`   |
+| MySQL      | `petclinic` | `petclinic` |
+| SonarQube  | `admin`   | `admin`   |
+
+The SonarQube token used by Jenkins is generated automatically by an init container on first startup.
+
+**In production**, all of the above credentials and the SonarQube token would be stored in a secrets manager (e.g., HashiCorp Vault or AWS Secrets Manager) and injected at runtime — never hardcoded or committed to source control.
 
 ## Monitoring stack
 

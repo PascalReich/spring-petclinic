@@ -25,16 +25,16 @@ pipeline {
 
         stage('Sonar') {
             steps {
-                withSonarQubeEnv('sonarqube') {
-                    sh '''
-                        chmod +x mvnw
-                        ./mvnw clean verify sonar:sonar \
-                          -Dsonar.projectKey=spring-petclinic \
-                          -Dsonar.projectName=spring-petclinic \
-                          -Dsonar.sourceEncoding=UTF-8 \
-                          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
-                    '''
-                }
+                sh '''
+                    chmod +x mvnw
+                    ./mvnw clean verify sonar:sonar \
+                      -Dsonar.projectKey=spring-petclinic \
+                      -Dsonar.projectName=spring-petclinic \
+                      -Dsonar.host.url=http://sonarqube:9000 \
+                      -Dsonar.sourceEncoding=UTF-8 \
+                      -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+                      -Dsonar.token="$(cat /run/secrets/sonar-token)"
+                '''
             }
         }
         stage('OWASP ZAP Scan') {
