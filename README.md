@@ -1,9 +1,15 @@
 # Devops Group 2
 
-## How to launch
+## Launch
 
 ```shell
-docker compose up
+docker compose up --build
+```
+
+## Teardown
+
+```shell
+docker compose down -v
 ```
 
 All services start automatically in the correct order via Docker healthchecks and dependency conditions. No manual setup required.
