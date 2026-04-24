@@ -67,6 +67,15 @@ Grafana credentials:
 
 Grafana is pre-provisioned with Prometheus as the default data source using
 [grafana/provisioning/datasources/prometheus.yml].
+The Jenkins monitoring dashboard is also provisioned from code and will appear
+automatically under the `Jenkins` folder after `docker compose up --build`.
+
+Dashboard panels:
+
+- average job duration over the last 15 minutes
+- JVM CPU load
+- JVM heap memory usage
+- Jenkins queue size
 
 # Spring PetClinic Sample Application [![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml)[![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/gradle-build.yml)
 
