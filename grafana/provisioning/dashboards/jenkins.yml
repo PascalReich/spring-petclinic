@@ -1,0 +1,16 @@
+# Allows Grafana in jenkins to automatically pick up dashboards from the /etc/grafana/dashboards directory
+# which is mounted as a volume in the docker-compose file. 
+# Doing this avoids having to manually make the dashboards each time
+
+apiVersion: 1
+
+providers:
+  - name: "Jenkins Dashboards"
+    orgId: 1
+    folder: "Jenkins"
+    type: file
+    disableDeletion: false
+    allowUiUpdates: true
+    updateIntervalSeconds: 30
+    options:
+      path: /etc/grafana/dashboards
