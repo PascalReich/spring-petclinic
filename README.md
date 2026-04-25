@@ -12,6 +12,10 @@ docker compose up --build
 docker compose down -v
 ```
 
+## Automation
+
+Key generation and sonarqube setup are fully automated!!
+
 All services start automatically in the correct order via Docker healthchecks and dependency conditions. No manual setup required.
 
 ## Credentials note
